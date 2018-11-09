@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link href='http://fonts.googleapis.com/css?family=Ubuntu&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+		<!--link href="main.css" rel="stylesheet" />
+		<script src="main.js" defer></script-->
+		<meta charset="UTF-8">
+	</head>
+	<body>
+		<output id="messages"></output>
+		<div>
+			<div contenteditable id="input"></div>
+		</div>
+		<script>
+			function $(a) {return document.getElementById(a)};
+			
+			ws = new WebSocket ('ws://localhost:9000');
+
+			ws.onmessage = function (message) {
+				// приводим ответ от сервера в пригодный вид 
+				var event = JSON.parse(message.data);
+				
+				// проверяем тип события и выбираем, что делать
+				switch (event.type) {
+					case 'message':
+						// рендерим само сообщение
+						
+						var name = document.createElement('div');
+						var icon = document.createElement('div');
+						var body = document.createElement('div');
+						var root = document.createElement('div');
+						
+						name.innerText = event.from;
+						body.innerText = event.message;
+						
+						root.appendChild(name);
+						root.appendChild(icon);
+						root.appendChild(body);
+						
+						$('messages').appendChild (root);
+						
+						break;
+					case 'authorize':
+						// ответ на запрос об авторизации
+						if (event.success) {
+							$('loginform').classList.remove('unauthorized');
+						}
+						break;
+					default: 
+						// если сервер спятил, то даем об себе этом знать
+						console.log ('unknown event:', event)
+						break;
+				}
+			}
+		</script>
+	</body>
+</html>
