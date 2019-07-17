@@ -1,0 +1,36 @@
+[
+  {
+    "port" : 1239,
+    "options" :
+    {"target" : "http://ispu.ru",
+      "autoRewrite" : true},
+    "console" : true,
+    "ws_console" : true,
+    "ws" : 9090,
+    "logfile" : "log_yandex.txt",
+    "name" : "yandex"
+
+  },
+  {
+    "port" : 1238,
+    "options" :
+    {"target" : "http://pikabu.ru",
+      "autoRewrite" : true},
+    "console" : true,
+    "ws_console" : true,
+    "ws" : 9091,
+    "logfile" : "log_google.txt",
+    "name" : "google"
+  },
+  {
+    "port" : 1237,
+    "options" :
+    {"target" : "http://altsoft.ru",
+      "autoRewrite" : true},
+    "console" : true,
+    "ws_console" : true,
+    "ws" : 9091,
+    "logfile" : "log_google.txt",
+    "name" : "google"
+  }
+]
