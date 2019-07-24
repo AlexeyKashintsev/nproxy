@@ -7,20 +7,20 @@
     "console" : false,
     "ws_console" : true,
     "ws" : 9090,
-    "logfile" : "log_yandex.txt",
-    "name" : "yandex"
+    "logfile" : "log_ispu.txt",
+    "name" : "ispu"
 
   },
   {
-    "port" : 1238,
+    "port" : 12350,
     "options" :
-    {"target" : "http://pikabu.ru",
+    {"target" : "http://staruml.io/",
       "autoRewrite" : true},
     "console" : false,
     "ws_console" : true,
     "ws" : 9091,
-    "logfile" : "log_google.txt",
-    "name" : "google"
+    "logfile" : "log_staruml.txt",
+    "name" : "staruml"
   },
   {
     "port" : 1237,
@@ -30,7 +30,7 @@
     "console" : false,
     "ws_console" : true,
     "ws" : 9091,
-    "logfile" : "log_google.txt",
-    "name" : "google"
+    "logfile" : "log_altsoft.txt",
+    "name" : "altsoft"
   }
 ]

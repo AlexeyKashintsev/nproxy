@@ -57,7 +57,7 @@ class Proxy {
 	constructor(logger, params) {
 		this._logger = logger;
 		this._proxy = HttpProxy.createProxyServer(params.options);
-		console.log('New proxy connection : ' + params.name);
+		console.log('New proxy connection : ' + params.name + ' localhost : ' + params.port);
 		let self = this;
 		this._proxy.on('open', function (proxySocket) {
 			// listen for messages coming FROM the target here
