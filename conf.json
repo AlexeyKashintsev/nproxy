@@ -4,7 +4,7 @@
     "options" :
     {"target" : "http://ispu.ru",
       "autoRewrite" : true},
-    "console" : true,
+    "console" : false,
     "ws_console" : true,
     "ws" : 9090,
     "logfile" : "log_yandex.txt",
@@ -16,7 +16,7 @@
     "options" :
     {"target" : "http://pikabu.ru",
       "autoRewrite" : true},
-    "console" : true,
+    "console" : false,
     "ws_console" : true,
     "ws" : 9091,
     "logfile" : "log_google.txt",
@@ -27,7 +27,7 @@
     "options" :
     {"target" : "http://altsoft.ru",
       "autoRewrite" : true},
-    "console" : true,
+    "console" : false,
     "ws_console" : true,
     "ws" : 9091,
     "logfile" : "log_google.txt",
