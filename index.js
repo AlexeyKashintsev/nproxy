@@ -1,26 +1,47 @@
 const HttpProxy = require('http-proxy');
 const fs = require('fs');
+const WebSocket = require('ws');
 
 class myLogger{
 	constructor () {
 
 	}
-	console_log(msg){
-		console.log(msg);
-	}
-	file_log (directory, log_file, data) {
-		let today = new Date();
-		let dd = String(today.getDate()).padStart(2, '0');
-		let mm = String(today.getMonth() + 1).padStart(2, '0');
-		let yyyy = today.getFullYear();
+	log (params, data) {
+		if (params.console) {
+			console.log(data);
+		}
+		if (params.file) {
 
-		today = dd + '_' + mm + '_' + yyyy + '_';
+			let today = new Date();
+			let dd = String(today.getDate()).padStart(2, '0');
+			let mm = String(today.getMonth() + 1).padStart(2, '0');
+			let yyyy = today.getFullYear();
 
-		if (fs.existsSync(directory)) {
-			fs.appendFileSync('./'+directory+'/'+ today + log_file, data);
-		} else {
-			fs.mkdirSync(directory);
-			fs.appendFileSync('./'+directory+'/'+ today + log_file, data);
+			today = dd + '_' + mm + '_' + yyyy + '_';
+
+			if (fs.existsSync(params.name)) {
+				fs.appendFileSync('./' + params.name + '/' + today + params.log_file, data);
+			} else {
+				fs.mkdirSync(params.name);
+				fs.appendFileSync('./' + params.name + '/' + today + params.log_file, data);
+			}
+		}
+		if (params.ws_console) {
+			//let wss = new WebSocket.Server({port : params.ws});
+			let broadcast = function (data) {
+				wss.clients.forEach(function each(client) {
+					if (client.readyState === WebSocket.OPEN) {
+						client.send(data);
+					}
+				});
+			};
+			if (WebSocket.Server({port : params.ws})) { //Как узнать есть ли сервер по указанному порту?
+				broadcast(data);
+			} else {
+				let wss = new WebSocket.Server({port : params.ws});
+				broadcast(data);
+			}
+
 		}
 	}
 }
@@ -28,7 +49,7 @@ class Сonfigurator{
 	constructor(logger){
 
 		let opt = require('node-getopt').create([
-			['f' , '='                    , 'filename.'],
+			['f' , '='                    , 'filename'],
 			[''  , 'no-comment'],
 			['h' , 'help'                , 'display this help']
 		])
@@ -61,17 +82,11 @@ class Proxy {
 		let self = this;
 		this._proxy.on('open', function (proxySocket) {
 			// listen for messages coming FROM the target here
-
-			if (params.console){
-				self._logger.console_log('New proxy connection' + params.port);
-			}
-			else {
-				self._logger.file_log(params.logfile, 'New proxy connection' + params.name);
-			}
+			self._logger.log(params, 'New proxy connection : ' + params.name + ' localhost : ' + params.port);
 		debugger;
 			proxySocket.on('data', (sd, req, res) => {
 			debugger;
-				self._logger.console_log(sd);
+				console.log(sd);
 			});
 		});
 
@@ -81,48 +96,19 @@ class Proxy {
 		this._proxy.on('proxyReq', function (proxyReq, req, res) {
 			let msg = '--- REQUEST ---\nMethod: ' + proxyReq.method + '\nPath: ' + proxyReq.path
 				+ (proxyReq._headers ? '\nHeaders: ' + JSON.stringify(proxyReq._headers) : '');
-			if (params.console) {
-				console.log(this._logger);
-				self._logger.console_log(msg);
-			} else {
-				self._logger.file_log(params.name,params.logfile, msg);
-			}
-			if (params.ws_console) {
-				//this.broadcast(msg);
-			}
+			self._logger.log(params, msg);
 
 			req.on('data', chunk => {
 				let body = chunk.toString('utf8');
-				if (params.console) {
-					self._logger.console_log('Body: ' + body);
-				} else {
-					self._logger.file_log(params.name,params.logfile, 'Body: ' + body);
-				}
-				if (params.ws_console) {
-					//this.broadcast('Body: ' + body);
-				}
+				self._logger.log(params,'Body: ' + body);
 			});
 		});
 		this._proxy.on('proxyRes', function (proxyRes, req, res) {
 			let msg = '--- RESPONSE ---\nHeaders: ' + JSON.stringify(proxyRes.headers);
-			if (params.console) {
-				self._logger.console_log(msg);
-			} else {
-				self._logger.file_log(params.name,params.logfile, msg);
-			}
-			if (params.ws_console) {
-				//this.broadcast(msg);
-			}
+			self._logger.log(params, msg);
 			proxyRes.on('data', chunk => {
 				let body = chunk.toString('utf8');
-				if (params.console) {
-					self._logger.console_log('Body: ' + body);
-				} else {
-					self._logger.file_log(params.name,params.logfile, 'Body: ' + body);
-				}
-				if (params.ws_console) {
-					//this.broadcast('Body: ' + body);
-				}
+				self._logger.log(params,'Body: ' + body);
 			});
 		});
 		this._proxy.listen(params.port);

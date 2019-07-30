@@ -6,8 +6,9 @@
       "autoRewrite" : true},
     "console" : false,
     "ws_console" : true,
+    "file" : true,
     "ws" : 9090,
-    "logfile" : "log_ispu.txt",
+    "log_file" : "log_ispu.txt",
     "name" : "ispu"
 
   },
@@ -18,8 +19,9 @@
       "autoRewrite" : true},
     "console" : false,
     "ws_console" : true,
+    "file" : true,
     "ws" : 9091,
-    "logfile" : "log_staruml.txt",
+    "log_file" : "log_staruml.txt",
     "name" : "staruml"
   },
   {
@@ -29,8 +31,9 @@
       "autoRewrite" : true},
     "console" : false,
     "ws_console" : true,
-    "ws" : 9091,
-    "logfile" : "log_altsoft.txt",
+    "file" : true,
+    "ws" : 9092,
+    "log_file" : "log_altsoft.txt",
     "name" : "altsoft"
   }
 ]
