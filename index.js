@@ -6,7 +6,7 @@ class myLogger{
 	constructor () {
 
 	}
-	log (params, data) {
+	log (params, wss, data) {
 		if (params.console) {
 			console.log(data);
 		}
@@ -27,21 +27,11 @@ class myLogger{
 			}
 		}
 		if (params.ws_console) {
-			//let wss = new WebSocket.Server({port : params.ws});
-			let broadcast = function (data) {
-				wss.clients.forEach(function each(client) {
-					if (client.readyState === WebSocket.OPEN) {
-						client.send(data);
-					}
-				});
-			};
-			if (WebSocket.Server({port : params.ws})) { //Как узнать есть ли сервер по указанному порту?
-				broadcast(data);
-			} else {
-				let wss = new WebSocket.Server({port : params.ws});
-				broadcast(data);
-			}
-
+			wss.clients.forEach(function each(client) {
+				if (client.readyState === WebSocket.OPEN) {
+					client.send(data);
+				}
+			});
 		}
 	}
 }
@@ -78,11 +68,13 @@ class Proxy {
 	constructor(logger, params) {
 		this._logger = logger;
 		this._proxy = HttpProxy.createProxyServer(params.options);
+		let wss = new WebSocket.Server({port : params.ws});
 		console.log('New proxy connection : ' + params.name + ' localhost : ' + params.port);
 		let self = this;
+
 		this._proxy.on('open', function (proxySocket) {
 			// listen for messages coming FROM the target here
-			self._logger.log(params, 'New proxy connection : ' + params.name + ' localhost : ' + params.port);
+			self._logger.log(params, wss, 'New proxy connection : ' + params.name + ' localhost : ' + params.port);
 		debugger;
 			proxySocket.on('data', (sd, req, res) => {
 			debugger;
@@ -90,27 +82,26 @@ class Proxy {
 			});
 		});
 
-		//this.broadcast = function () {
-		//};
-
 		this._proxy.on('proxyReq', function (proxyReq, req, res) {
 			let msg = '--- REQUEST ---\nMethod: ' + proxyReq.method + '\nPath: ' + proxyReq.path
 				+ (proxyReq._headers ? '\nHeaders: ' + JSON.stringify(proxyReq._headers) : '');
-			self._logger.log(params, msg);
+			self._logger.log(params, wss, msg);
 
 			req.on('data', chunk => {
 				let body = chunk.toString('utf8');
-				self._logger.log(params,'Body: ' + body);
+				self._logger.log(params, wss,'Body: ' + body);
 			});
 		});
+
 		this._proxy.on('proxyRes', function (proxyRes, req, res) {
 			let msg = '--- RESPONSE ---\nHeaders: ' + JSON.stringify(proxyRes.headers);
-			self._logger.log(params, msg);
+			self._logger.log(params, wss, msg);
 			proxyRes.on('data', chunk => {
 				let body = chunk.toString('utf8');
-				self._logger.log(params,'Body: ' + body);
+				self._logger.log(params, wss,'Body: ' + body);
 			});
 		});
+
 		this._proxy.listen(params.port);
 	}
 }
