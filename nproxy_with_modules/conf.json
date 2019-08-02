@@ -1,0 +1,39 @@
+[
+  {
+    "port" : 1239,
+    "options" :
+    {"target" : "http://ispu.ru",
+      "autoRewrite" : true},
+    "console" : false,
+    "ws_console" : true,
+    "file" : true,
+    "ws" : 9090,
+    "log_file" : "log_ispu.txt",
+    "name" : "ispu"
+
+  },
+  {
+    "port" : 12350,
+    "options" :
+    {"target" : "http://staruml.io/",
+      "autoRewrite" : true},
+    "console" : false,
+    "ws_console" : true,
+    "file" : true,
+    "ws" : 9091,
+    "log_file" : "log_staruml.txt",
+    "name" : "staruml"
+  },
+  {
+    "port" : 1237,
+    "options" :
+    {"target" : "http://altsoft.ru",
+      "autoRewrite" : true},
+    "console" : false,
+    "ws_console" : true,
+    "file" : true,
+    "ws" : 9092,
+    "log_file" : "log_altsoft.txt",
+    "name" : "altsoft"
+  }
+]
